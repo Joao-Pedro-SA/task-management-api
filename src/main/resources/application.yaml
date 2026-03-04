@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: AgendaDeAtividades
+  datasource:
+    url: jdbc:mysql://localhost:3306/agenda?createDatabaseIfNotExist=true
+    username: root
+    password: joao131205
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
