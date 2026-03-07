@@ -41,8 +41,7 @@ public class ActivityController {
     //EndPoint para buscar entidade por titulo
     @GetMapping("/by-title")
     public ResponseEntity<ActivityDTO> getActivity(@RequestParam String title){
-        Activity entity = activity.searchByTitle(title);
-        return ResponseEntity.ok(ActivityMapper.toDTO(entity));
+       return ResponseEntity.ok(activity.searchByTitle(title));
     }
 
     //Endpoint para deletar entidade por id

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "activity")
 public class Activity {
-
+    
     @Column(name = "title", unique = true, length = 100)
+    @NotBlank
     private String  title;
 
-    @Column(name = "description", unique = false, length = 100)
+    @Column(name = "description", unique = false, length = 150)
     private String description;
 
     @Id()

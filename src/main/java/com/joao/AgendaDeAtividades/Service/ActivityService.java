@@ -33,20 +33,20 @@ public class ActivityService {
 
     //Método para criação de atividades usando a classe ActivityDTO para controle de dados.
     public ActivityDTO createActivity(ActivityDTO dto){ 
-    dto.setId(null);   
-    Activity dados = ActivityMapper.toEntity(dto);
-    Activity salvo = repository.save(dados);
-   
+        dto.setId(null);   
+        Activity dados = ActivityMapper.toEntity(dto);
+        Activity salvo = repository.save(dados);
+
         return ActivityMapper.toDTO(salvo);
     }
 
     @Transactional
     public void deleteById(Long id){
-    if(!repository.existsById(id)){
-        throw new ActivityNotFoundException( "Id ("+id+") não encontrado");
-    }
+        if(!repository.existsById(id)){
+            throw new ActivityNotFoundException( "Id ("+id+") não encontrado");
+        }
 
-    repository.deleteById(id);
+        repository.deleteById(id);
   
     }
 
@@ -63,10 +63,12 @@ public class ActivityService {
     }
 
     //Método para procurar uma atividade por titulo
-    public Activity searchByTitle(String title){
+    public ActivityDTO searchByTitle(String title){
 
-        return repository.findByTitle(title)
+        Activity activity = repository.findByTitle(title)
         .orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao titulo ("+title+") não encontrada"));
+
+        return ActivityMapper.toDTO(activity);
     }  
 
 
@@ -74,45 +76,45 @@ public class ActivityService {
      public List <Activity> searchALLActivity(){
         List<Activity> list = repository.findAll();
 
-        if (list.isEmpty()) {
-           throw new ActivityNotFoundException("Nenhuma atividade encontrada no sistema");
-            
-        }
-
         return list;
     }   
 
     //método para fazer atualização parcial de uma atividade. Usa o id para encontrar a atividade a ser atualizada
     @Transactional
     public Activity patchById(Long id, ActivityPatchDTO activity){
-        Activity atividadeAtual = repository.findById(id)
-        .orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+id+") não encontrada"));
+        
+        Activity atividadeAtual = ActivityExists(id);
 
         ActivityMapper.applyPatch(activity, atividadeAtual);
         return repository.save(atividadeAtual);
-
 
     }
 
     //método para fazer atualização parcial de uma atividade usando o Titulo para encontrar a atividade.
     @Transactional
     public Activity patchByTitle(String title, ActivityPatchDTO dto) {
-    Activity atual = repository.findByTitle(title)
-        .orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao titulo ("+title+") não encontrada"));
+        Activity atual = TitleActivityExists(title);
 
-    if (dto.getTitle() != null) {
-        atual.setTitle(dto.getTitle());
-    }
-    if (dto.getDescription() != null) {
-        atual.setDescription(dto.getDescription());
-    }
-    if (dto.getStatus() != null) {
-        atual.setStatus(dto.getStatus());
-    }
+        if (dto.getTitle() != null) {
+            atual.setTitle(dto.getTitle());
+        }
+        if (dto.getDescription() != null) {
+            atual.setDescription(dto.getDescription());
+        }
+        if (dto.getStatus() != null) {
+            atual.setStatus(dto.getStatus());
+        }
 
-    return repository.save(atual);
+        return repository.save(atual);
 }
+     //Método para verificação de entity no banco de dados
+    private Activity ActivityExists(Long id){
+        return repository.findById(id).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+id+") não encontrada."));
+    }
 
-
+    private Activity TitleActivityExists(String title){
+        return repository.findByTitle(title).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+title+") não encontrada."));
+    }
+   
 
 }
