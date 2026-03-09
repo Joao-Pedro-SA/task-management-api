@@ -1,11 +1,8 @@
 package com.joao.AgendaDeAtividades.Service;
 
-
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
 import com.joao.AgendaDeAtividades.data.dto.ActivityDTO;
 import com.joao.AgendaDeAtividades.data.dto.ActivityPatchDTO;
 import com.joao.AgendaDeAtividades.exceptions.ActivityNotFoundException;
@@ -65,25 +62,24 @@ public class ActivityService {
     //Método para procurar uma atividade por titulo
     public ActivityDTO searchByTitle(String title){
 
-        Activity activity = repository.findByTitle(title)
-        .orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao titulo ("+title+") não encontrada"));
+        Activity activity = titleActivityExists(title);
 
         return ActivityMapper.toDTO(activity);
     }  
 
 
     //método para procurar todas as atividades
-     public List <Activity> searchALLActivity(){
-        List<Activity> list = repository.findAll();
-
-        return list;
+     public Page <ActivityDTO> searchALLActivity(Pageable pageable){
+        return repository.findAll(pageable)
+        .map(ActivityMapper::toDTO);
+        
     }   
 
     //método para fazer atualização parcial de uma atividade. Usa o id para encontrar a atividade a ser atualizada
     @Transactional
     public Activity patchById(Long id, ActivityPatchDTO activity){
         
-        Activity atividadeAtual = ActivityExists(id);
+        Activity atividadeAtual = activityExists(id);
 
         ActivityMapper.applyPatch(activity, atividadeAtual);
         return repository.save(atividadeAtual);
@@ -92,28 +88,22 @@ public class ActivityService {
 
     //método para fazer atualização parcial de uma atividade usando o Titulo para encontrar a atividade.
     @Transactional
-    public Activity patchByTitle(String title, ActivityPatchDTO dto) {
-        Activity atual = TitleActivityExists(title);
+    public ActivityDTO patchByTitle(String title, ActivityPatchDTO dto) {
+        Activity atual = titleActivityExists(title);
 
-        if (dto.getTitle() != null) {
-            atual.setTitle(dto.getTitle());
-        }
-        if (dto.getDescription() != null) {
-            atual.setDescription(dto.getDescription());
-        }
-        if (dto.getStatus() != null) {
-            atual.setStatus(dto.getStatus());
-        }
+        ActivityMapper.applyPatch(dto, atual);
 
-        return repository.save(atual);
+        Activity save = repository.save(atual);
+
+        return ActivityMapper.toDTO(save);
 }
      //Método para verificação de entity no banco de dados
-    private Activity ActivityExists(Long id){
+    private Activity activityExists(Long id){
         return repository.findById(id).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+id+") não encontrada."));
     }
 
-    private Activity TitleActivityExists(String title){
-        return repository.findByTitle(title).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+title+") não encontrada."));
+    private Activity titleActivityExists(String title){
+        return repository.findByTitle(title).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao titulo ("+title+") não encontrada."));
     }
    
 

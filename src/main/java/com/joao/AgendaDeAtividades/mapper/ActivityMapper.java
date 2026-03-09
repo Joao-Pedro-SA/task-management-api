@@ -47,12 +47,12 @@ public class ActivityMapper {
     }
 */
 
-    public static ActivityDTO toDTO(Activity atividade) {
+    public static ActivityDTO toDTO(Activity activity) {
         return ActivityDTO.builder()
-            .id(atividade.getId())
-            .title(atividade.getTitle())
-            .description(atividade.getDescription())
-            .status(atividade.getStatus())
+            .id(activity.getId())
+            .title(activity.getTitle())
+            .description(activity.getDescription())
+            .status(activity.getStatus())
             .build();
     }
 
@@ -63,6 +63,15 @@ public class ActivityMapper {
         a.setDescription(dto.getDescription());
         if (dto.getStatus() != null) a.setStatus(dto.getStatus());
         return a;
+    }
+
+    public static ActivityPatchDTO toPatchDTO(Activity activity){
+         return ActivityPatchDTO.builder()
+            .title(activity.getTitle())
+            .description(activity.getDescription())
+            .status(activity.getStatus())
+            .build();
+
     }
 
     // PATCH: aplica em uma entity existente
