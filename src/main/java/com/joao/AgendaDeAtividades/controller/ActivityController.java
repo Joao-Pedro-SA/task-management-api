@@ -18,12 +18,13 @@ import com.joao.AgendaDeAtividades.data.dto.ActivityDTO;
 import com.joao.AgendaDeAtividades.data.dto.ActivityPatchDTO;
 import com.joao.AgendaDeAtividades.mapper.ActivityMapper;
 import com.joao.AgendaDeAtividades.model.Activity;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/activities")
-public class ActivityController {
+@Tag(name = "activity", description = "Endpoints for managing tasks")
+public class ActivityController implements ActivityControllerDocs {
     private ActivityService activity;
 
     public ActivityController(ActivityService activity) {
@@ -32,6 +33,7 @@ public class ActivityController {
 
 
     /*EndPoint para cria uma atividade no Formato DTO e retorna status 201 junto com o body.*/
+    @Override
     @PostMapping
     public ResponseEntity<ActivityDTO> createActivity(@Valid @RequestBody ActivityDTO dto){
         ActivityDTO created = activity.createActivity(dto);
@@ -40,21 +42,27 @@ public class ActivityController {
     }
 
     //EndPoint para buscar entidade por titulo
+    @Override
     @GetMapping("/title/{title}")
+ 
     public ResponseEntity<ActivityDTO> getActivity(@PathVariable String title){
        return ResponseEntity.ok(activity.searchByTitle(title));
     }
     
 
     //EndPoint para requisição de todas as entidades 
+    @Override
     @GetMapping
+    
     public ResponseEntity<Page<ActivityDTO>> getAllActivities(Pageable pageable){
         Page <ActivityDTO> list = activity.searchALLActivity(pageable);
         return  ResponseEntity.ok(list);
     }
 
     //Endpoint para deletar entidade por id
+    @Override
     @DeleteMapping("/{id}")
+      
     public ResponseEntity<Void> deleteActivityByID(@PathVariable Long id){
         activity.deleteById(id);
 
@@ -63,7 +71,9 @@ public class ActivityController {
 
 
     //Endpoint para atualização parcial da entidade.
+    @Override
     @PatchMapping("/{id}")
+    
     public ResponseEntity<ActivityDTO> patchById(@PathVariable Long id, @RequestBody ActivityPatchDTO dto){
         Activity entity = activity.patchById(id, dto);
         return ResponseEntity.ok(ActivityMapper.toDTO(entity));
