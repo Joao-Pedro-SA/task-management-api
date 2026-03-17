@@ -66,6 +66,7 @@ Tratamento centralizado de erros utilizando:
 * ✅ Validação de campos com Bean Validation
 * ✅ Tratamento global de exceções
 * ✅ Respostas de erro padronizadas (404, 400, etc.)
+* ✅ Testes unitários com JUnit
 
 ---
 
@@ -125,14 +126,6 @@ Este projeto foi desenvolvido com foco em evolução técnica para backend Java,
 * Separação de responsabilidades
 * Tratamento estruturado de erros
 * Uso correto de DTOs
-
----
-
-## 📌 Próximas Melhorias
-
-* Testes unitários com JUnit
-* Autenticação com Spring Security
-* Deploy em ambiente cloud
 
 ---
 
