@@ -15,6 +15,8 @@ O projeto foi construído com foco em boas práticas de arquitetura backend, sep
 * Maven
 * Jakarta Validation
 * Tratamento global de exceções (@RestControllerAdvice)
+* Docker
+* Swagger OpenAPI
 
 ---
 
@@ -128,10 +130,8 @@ Este projeto foi desenvolvido com foco em evolução técnica para backend Java,
 
 ## 📌 Próximas Melhorias
 
-* Implementação de paginação
 * Testes unitários com JUnit
 * Autenticação com Spring Security
-* Dockerização da aplicação
 * Deploy em ambiente cloud
 
 ---
