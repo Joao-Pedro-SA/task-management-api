@@ -16,9 +16,10 @@ import jakarta.transaction.Transactional;
 public class ActivityService {
 
     private final ActivityRepository repository;
-    
-    public ActivityService(ActivityRepository repository){
+    private final ValidatorActivity validator;
+    public ActivityService(ActivityRepository repository, ValidatorActivity validator){
         this.repository = repository;
+        this.validator = validator;
     }
 
     /*O objeto activity "dados" serve para criar a entidade que sera salva no banco de dados.
@@ -62,10 +63,10 @@ public class ActivityService {
     //Método para procurar uma atividade por titulo
     public ActivityDTO searchByTitle(String title){
 
-        Activity activity = titleActivityExists(title);
+        Activity activity = validator.titleActivityExists(title);
 
         return ActivityMapper.toDTO(activity);
-    }  
+    }
 
 
     //método para procurar todas as atividades
@@ -78,8 +79,8 @@ public class ActivityService {
     //método para fazer atualização parcial de uma atividade. Usa o id para encontrar a atividade a ser atualizada
     @Transactional
     public Activity patchById(Long id, ActivityPatchDTO activity){
-        
-        Activity atividadeAtual = activityExists(id);
+
+        Activity atividadeAtual = validator.activityExists(id);
 
         ActivityMapper.applyPatch(activity, atividadeAtual);
         return repository.save(atividadeAtual);
@@ -89,7 +90,7 @@ public class ActivityService {
     //método para fazer atualização parcial de uma atividade usando o Titulo para encontrar a atividade.
     @Transactional
     public ActivityDTO patchByTitle(String title, ActivityPatchDTO dto) {
-        Activity atual = titleActivityExists(title);
+        Activity atual = validator.titleActivityExists(title);
 
         ActivityMapper.applyPatch(dto, atual);
 
@@ -97,14 +98,7 @@ public class ActivityService {
 
         return ActivityMapper.toDTO(save);
 }
-     //Método para verificação de entity no banco de dados
-    private Activity activityExists(Long id){
-        return repository.findById(id).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao id ("+id+") não encontrada."));
-    }
 
-    private Activity titleActivityExists(String title){
-        return repository.findByTitle(title).orElseThrow(() -> new ActivityNotFoundException("Atividade referente ao titulo ("+title+") não encontrada."));
-    }
    
 
 }

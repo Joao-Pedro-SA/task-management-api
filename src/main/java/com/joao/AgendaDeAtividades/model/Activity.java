@@ -1,5 +1,6 @@
 package com.joao.AgendaDeAtividades.model;
 
+import com.joao.AgendaDeAtividades.data.dto.ActivityDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,7 +37,7 @@ public class Activity {
     @Column(nullable = false)
     @Builder.Default
     private ActivityStatus status = ActivityStatus.TODO;
-    
+
     public ActivityStatus getStatus() {
         return status;
     }
@@ -52,8 +53,8 @@ public class Activity {
     public String getDescription() {
         return description;
     }
-    public void setDescription(String descricao) {
-        this.description = descricao;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Long getId() {
         return id;
@@ -61,6 +62,10 @@ public class Activity {
     public void setId(Long id) {
         this.id = id;
     }
-    
 
+    public Activity(ActivityDTO dto) {
+        title = dto.getTitle();
+        description = dto.getDescription();
+        status = dto.getStatus();
+    }
 }
