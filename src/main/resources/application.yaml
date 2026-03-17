@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/agenda?createDatabaseIfNotExist=true
     username: root
-    password: joao131205
+    password: 
 
   jpa:
     hibernate:
