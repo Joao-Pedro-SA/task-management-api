@@ -1,7 +1,7 @@
 # 📌 Task Management API
 
 API REST desenvolvida em **Java com Spring Boot** para gerenciamento de atividades.
-O projeto foi construído com foco em boas práticas de arquitetura backend, separação de camadas e tratamento global de exceções.
+O projeto foi construído com foco em boas práticas de desenvolvimento backend, incluindo arquitetura em camadas, validação de dados, tratamento global de exceções e testes automatizados.
 
 ---
 
@@ -13,16 +13,18 @@ O projeto foi construído com foco em boas práticas de arquitetura backend, sep
 * Hibernate
 * MySQL
 * Maven
-* Jakarta Validation
+* Bean Validation (Jakarta Validation)
+* JUnit e Mockito (testes)
+* MockMvc (testes de controller)
 * Tratamento global de exceções (@RestControllerAdvice)
-* Docker
+* Docker e Docker Compose
 * Swagger OpenAPI
 
 ---
 
 ## 🏗️ Arquitetura do Projeto
 
-O projeto segue separação por camadas:
+O projeto segue o padrão de arquitetura em camadas:
 
 ```
 controller → service → repository → model
@@ -31,27 +33,25 @@ controller → service → repository → model
 
 ### 🔹 Controller
 
-Responsável por expor os endpoints REST.
+Responsável por expor os endpoints REST e lidar com as requisições HTTP.
 
 ### 🔹 Service
 
-Contém regras de negócio e validações.
+Contém regras de negócio e validações da aplicação.
 
 ### 🔹 Repository
 
-Comunicação com o banco de dados via Spring Data JPA.
+Comunicação com o banco de dados usando Spring Data JPA.
 
 ### 🔹 DTO
 
 Objetos de transferência de dados para entrada e saída da API.
 
-### 🔹 Exceptions
-
-Tratamento centralizado de erros utilizando:
-
-* Exceptions customizadas
-* GlobalExceptionHandler
-* Padronização de respostas de erro
+### 🔹 Exception Handling
+Tratamento centralizado de erros com:
+- Exceptions customizadas
+- `@RestControllerAdvice`
+- Respostas padronizadas para erros (400, 404, etc.)
 
 ---
 
@@ -60,13 +60,13 @@ Tratamento centralizado de erros utilizando:
 * ✅ Criar atividade
 * ✅ Buscar atividade por ID
 * ✅ Buscar atividade por título
-* ✅ Listar atividades
+* ✅ Listar atividades com paginação (Pageable)
 * ✅ Atualização parcial (PATCH)
 * ✅ Deletar atividade
 * ✅ Validação de campos com Bean Validation
 * ✅ Tratamento global de exceções
 * ✅ Respostas de erro padronizadas (404, 400, etc.)
-* ✅ Testes unitários com JUnit
+* ✅ Testes unitários e de controller
 
 ---
 
@@ -80,7 +80,7 @@ POST /activities
 {
   "title": "Estudar Spring",
   "description": "Revisar tratamento de exceções",
-  "status": "PENDING"
+  "status": "TODO"
 }
 ```
 
@@ -97,6 +97,18 @@ POST /activities
   "path": "/activities/99"
 }
 ```
+---
+## 🐳 Como executar com Docker
+
+````
+docker-compose up --build
+````
+
+ A api estará disponível em:
+
+````
+http://localhost:8080
+````
 
 ---
 
@@ -118,6 +130,16 @@ mvn spring-boot:run
 
 ---
 
+## 📖 Documentação da API
+
+Após rodar o projeto, acesse: 
+
+````
+http://localhost:8080/swagger-ui.html
+````
+
+---
+
 ## 🎯 Objetivo do Projeto
 
 Este projeto foi desenvolvido com foco em evolução técnica para backend Java, aplicando:
@@ -125,7 +147,8 @@ Este projeto foi desenvolvido com foco em evolução técnica para backend Java,
 * Boas práticas de organização
 * Separação de responsabilidades
 * Tratamento estruturado de erros
-* Uso correto de DTOs
+* Integração com banco de dados
+* Conteinerização com docker
 
 ---
 
