@@ -1,18 +1,17 @@
 package com.joao.AgendaDeAtividades.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.joao.AgendaDeAtividades.Service.ActivityService;
 import com.joao.AgendaDeAtividades.data.dto.ActivityDTO;
+import com.joao.AgendaDeAtividades.data.dto.ActivityPatchDTO;
+import com.joao.AgendaDeAtividades.mapper.ActivityMapper;
 import com.joao.AgendaDeAtividades.model.Activity;
 import com.joao.AgendaDeAtividades.model.ActivityStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -20,17 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import tools.jackson.databind.ObjectMapper;
-
 import java.util.Arrays;
 import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.mockito.Mockito.verify;
 
 @WebMvcTest(ActivityController.class)
@@ -86,6 +82,7 @@ class ActivityControllerTest {
     }
 
     @Test
+    @DisplayName("Should get all activity in the format PageAble with params pageSize and PageNumber")
     void getAllActivities() throws Exception {
         int pageSize = 2;
         int pageNumber = 0;
@@ -123,10 +120,37 @@ class ActivityControllerTest {
     }
 
     @Test
-    void deleteActivityByID() {
-    }
+    @DisplayName("Should delete activity by id")
+    void deleteActivityByID() throws Exception{
 
+        long id = 0;
+
+        Mockito.doNothing().when(service).deleteById(id);
+
+        mockmvc.perform(delete("/activities/{id}", id)).andExpect(status().isNoContent());
+
+        verify(service).deleteById(id);
+
+    }
     @Test
-    void patchById() {
+    @DisplayName("Should patch update by id")
+    void patchById() throws Exception {
+        ActivityDTO dto =
+                new ActivityDTO("teste1",
+                        "teste do metodo de criação de atividades",
+                        1L,
+                        ActivityStatus.TODO);
+
+
+        Mockito.when(service.patchById(Mockito.eq(dto.getId()), Mockito.any())).thenReturn(dto);
+
+        mockmvc.perform(patch("/activities/{id}", dto.getId()).
+                contentType(MediaType.APPLICATION_JSON).
+                content(asJsonString(dto))).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$.title").value("teste1"));
+
+        verify(service).patchById(dto.getId(), Mockito.any());
+
     }
 }
